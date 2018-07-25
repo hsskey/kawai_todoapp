@@ -6,40 +6,55 @@ const {width, height} = Dimensions.get("window");
 export default class ToDo extends Component {
     state = {
         isComplete : false,
-        isEditing: false
+        isEditing: false,
+        toDoValue:""
     }
     render(){
-        const {isComplete,isEditing} = this.state
+        const {isComplete,isEditing,toDoValue} = this.state
+        const {text} = this.props
         return <View style={styles.container}>
                 <View style={styles.column}>
                     <TouchableOpacity onPress={this._toggleComplete}>
                         <View style={[styles.circle, isComplete ? styles.isCompleteCircle : styles.unCompletedCircle]} />
                     </TouchableOpacity>
-                    <Text style={[styles.text, isComplete ? styles.isCompleteText : styles.unCompletedText]}>Hello I'am Todos~!</Text>
+                    {isEditing ?(
+                        <TextInput value={toDoValue} 
+                        style={[styles.text,
+                            styles.input,
+                            isComplete ? styles.isCompleteText : styles.unCompletedText]} 
+                        multiline={true}
+                        onChangeText={this._controllInput}
+                        returnKeyType={"done"}
+                        onBlur={this._finishEditing}>
+
+                        </TextInput>
+                    ):(
+                        <Text style={[styles.text, isComplete ? styles.isCompleteText : styles.unCompletedText]}>{text}</Text>
+                    )}
                 </View>
                 
-                    {isEditing ?(
-                        <View style={styles.actions}>
-                            <TouchableOpacity onPressOut={this._finishEditing}>
-                                <View style={styles.actionContainer}>
-                                    <Text style={styles.actionText}>✅</Text>
-                                </View>
-                            </TouchableOpacity>
+                {isEditing ?(
+                <View style={styles.actions}>
+                    <TouchableOpacity onPressOut={this._finishEditing}>
+                        <View style={styles.actionContainer}>
+                            <Text style={styles.actionText}>✅</Text>
                         </View>
-                    ):(
-                        <View style={styles.actions}>
-                            <TouchableOpacity onPressOut={this._startEditing}>
-                                <View style={styles.actionContainer}>
-                                    <Text style={styles.actionText}>✏️</Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                                <View style={styles.actionContainer}>
-                                    <Text style={styles.actionText}>❌</Text>
-                                </View>
-                            </TouchableOpacity>
+                    </TouchableOpacity>
+                </View>
+                ):(
+                <View style={styles.actions}>
+                    <TouchableOpacity onPressOut={this._startEditing}>
+                        <View style={styles.actionContainer}>
+                            <Text style={styles.actionText}>✏️</Text>
                         </View>
-                    )}
+                    </TouchableOpacity>
+                    <TouchableOpacity>
+                        <View style={styles.actionContainer}>
+                            <Text style={styles.actionText}>❌</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+                )}
                 
             </View>
     }
@@ -53,8 +68,16 @@ export default class ToDo extends Component {
     }
 
     _startEditing = () =>{
+        const {text} = this.props;
         this.setState({
-            isEditing:true
+            isEditing:true,
+            toDoValue: text           
+        })
+    }
+    
+    _controllInput = (text) => {
+        this.setState({
+            toDoValue: text
         })
     }
 
@@ -95,9 +118,9 @@ const styles = StyleSheet.create({
         color:"#353535"
       },
     text: {
-        fontWeight:"600",
+        fontWeight: "600",
         fontSize: 20,
-        marginVertical : 20
+        marginVertical: 20
     },
     column:{
         flexDirection:"row",
@@ -110,5 +133,10 @@ const styles = StyleSheet.create({
     actionContainer:{
         marginVertical:10,
         marginHorizontal:10
+    },
+    input:{
+        width: width / 2,
+        marginVertical: 15,
+        paddingBottom: 5
     }
 });
