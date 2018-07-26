@@ -18,15 +18,16 @@ const { height, width } = Dimensions.get("window");
 export default class App extends React.Component {
   state = {
     newToDo: "",
-    loadedToDos: false
+    loadedToDos: false,
+    toDos:{}
   }
   componentDidMount = () =>{
     this._loadToDos();
   }
 
   render() {
-    const { newToDo, loadedToDos } = this.state
-
+    const { newToDo, loadedToDos,toDos } = this.state
+    console.log(toDos);
     if (!loadedToDos) {
       return <AppLoading />
     }
@@ -78,6 +79,11 @@ export default class App extends React.Component {
             createdAt : Date.now()
           }
         }
+        /** ... == "전개연산자"
+         * 1) ...prevState : 이전 toDo를 그대로 불러오고
+         * 2) newToDo를 비우면서,
+         * 3) toDos 에 입력을 받은 객체(내용)을 newToDoObject에 넣는것
+         */
         const newState = {
           ...prevState,
           newToDo:"",
