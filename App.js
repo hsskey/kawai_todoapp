@@ -43,6 +43,7 @@ export default class App extends React.Component {
             placeholderTextColor={"#999"}
             returnKeyType={"done"}
             autoCorrect={false}
+            onSubmitEditing={this._addToDo}
           />
           <ScrollView contentContainerStyle={styles.toDos}>
             <ToDo text={"Hello I am To Do!"} />
@@ -63,6 +64,15 @@ export default class App extends React.Component {
       loadedToDos:true
     })
   }
+  _addToDo = () => {
+    const {newToDo} = this.setState;
+    if(newToDo !==""){
+      this.setState({
+        newToDo: ""
+      })
+    }
+  }
+
 }
 
 const styles = StyleSheet.create({
