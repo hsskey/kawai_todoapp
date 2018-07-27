@@ -6,7 +6,8 @@ import {
   StatusBar,
   Dimensions,
   TextInput,
-  Platform
+  Platform,
+  AsyncStorage
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { AppLoading } from "expo";
@@ -53,6 +54,7 @@ export default class App extends React.Component {
             deleteToDo={this._deleteToDo}
             uncompleteToDo={this._uncompleteToDo}
             completeToDo={this._completeToDo}
+            updateToDo={this._updateToDo}
             {...toDo}
           />
           )
@@ -101,6 +103,7 @@ export default class App extends React.Component {
             ...newToDoObject
           }
         }
+        this._saveToDo(newState.toDos);
         return {...newState};
       })
     }
@@ -114,14 +117,14 @@ export default class App extends React.Component {
             ...prevState,
             ...toDos
         }
+        this._saveToDo(newState.toDos);
         return {...newState};
     })
 }
 
   _uncompleteToDo = id => {
     this.setState(prevState => {
-      console.log(...prevState);
-      console.log(...prevState.toDos);
+      
       const newState = {
         ...prevState,
         toDos: {
@@ -132,7 +135,8 @@ export default class App extends React.Component {
           }
         }
       }
-      return {...newState};
+      this._saveToDo(newState.toDos);
+      return { ...newState };
     })
   }
 
@@ -148,12 +152,42 @@ export default class App extends React.Component {
           }
         }
       }
+      // console.log("첫번째 : ...prevState: ");
+      // console.log({...prevState});
+      // console.log("두번째 : ...prevState.toDos: ");
+      // console.log({...prevState.toDos});
+      // console.log("세번째 : ...prevState.toDos[id]: ");
+      // console.log({...prevState.toDos[id]});
+      // console.log("newState : " + {newState});
+
+      this._saveToDo(newState.toDos);
       return {...newState};
     })
   }
-
+  _updateToDo = (id,text) =>{
+    this.setState(prevState =>{
+      const newState = {
+        ...prevState,
+        toDos : {
+          ...prevState.toDos,
+          [id] : {
+            ...prevState.toDos[id],
+            text : text
+          }
+        }
+      }
+      this._saveToDo(newState.toDos);
+      return { ...newState };
+    })
+  }
+  _saveToDo = (newToDo) => {
+    //console.log(JSON.stringify(newToDo));
+    AsyncStorage.setItem(JSON.stringify(newToDo))
+  }
 
 }
+
+
 
 const styles = StyleSheet.create({
   container: {
