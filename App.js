@@ -72,10 +72,20 @@ export default class App extends React.Component {
       newToDo: text
     })
   }
-  _loadToDos = () =>{
-    this.setState({
-      loadedToDos:true
-    })
+  //async - wait를 안할시 
+  _loadToDos =async () =>{
+    try {
+      const toDos = await AsyncStorage.getItem("toDos");
+      const parsedToDos = JSON.parse(toDos);
+      this.setState({
+        loadedToDos:true,
+        toDos: parsedToDos
+
+      })
+      console.log(toDos);
+    } catch(err){
+      console.log(err);
+    }
   }
   _addToDo = () => {
     const {newToDo} = this.state;
@@ -182,7 +192,7 @@ export default class App extends React.Component {
   }
   _saveToDo = (newToDo) => {
     //console.log(JSON.stringify(newToDo));
-    AsyncStorage.setItem(JSON.stringify(newToDo))
+    AsyncStorage.setItem("toDos",JSON.stringify(newToDo))
   }
 
 }
